@@ -1,33 +1,22 @@
-import { useState } from 'react'
-import Counter from '../components/Counter'
-
+import { useEffect, useState } from 'react';
+import Car from '../components/Car'
 
 export default function Inventory() {
-    const [counters, setCounters] = useState([
-        {
-            title: 'Ferrari Counter',
-            initialCount: 5
-        },
-        {
-            title: 'Porsche Counter',
-            initialCount: 15
-        },
-        {
-            title: 'Tractor Counter',
-            initialCount: 25
-        },
-        {
-            title: 'Corvette Counter',
-            initialCount: 50
-        },
-    ])
-
+    const [cars, setCars] = useState([])
+    console.log(cars)
+    useEffect(() => {
+        async function getCars() {
+            const response = await fetch('https://my-json-server.typicode.com/Llang8/cars-api/cars')
+            const data = await response.json()
+            setCars(data)
+        }
+        getCars()
+    }, [])
 
     return (
-        <div className="App">
-            {
-                counters.map((counter) => <Counter title={counter.title} initialCount={counter.initialCount} />)
-            }
+        <div>
+            <h1>Inventory</h1>
+            { cars.map((car) => <Car car={car} key={car.id} />) }
         </div>
-    );
+    )
 }

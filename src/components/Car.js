@@ -5,8 +5,8 @@ export default function Car(props) {
         <div className="car">
             <p>Car: {props.car.name}</p>
             <p>Year: {props.car.year}</p>
-            <p>Selling Price: {props.car.selling_price}</p>
-            <p>KM Driven: {props.car.km_driven}</p>
+            <p>Selling Price: {props.car.sellingPrice}</p>
+            <p>KM Driven: {props.car.kmDriven}</p>
             {
                 (props.hidelink) ?
                 <></> :

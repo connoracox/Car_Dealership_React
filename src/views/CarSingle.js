@@ -14,7 +14,7 @@ export default function CarSingle() {
             try {
                 const data = await getCar(id)
                 setCar(data)
-            } catch (error) {
+            } catch (err) {
                 setError(true)
             }
         }

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import { DataContext } from '../contexts/DataProvider'
 
 
 // ADDED POKEMON FOR PRACTICE
@@ -9,15 +10,15 @@ export default function Pokemon() {
     const[loadingState, setLoadingState] =useState("LOADING")
     const [pokemonId, setPokemonId] = useState(1)
     const [currSearch, setCurrSearch] = useState(1) 
+    const { getPokemonData } = useContext(DataContext)
 
     useEffect(() => {
-        async function getPokemonData() {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-            const data = await response.json()
+        async function handleLoad() {
+            const data = await getPokemonData(pokemonId)
             setPokemonData(data)
             setLoadingState("LOADED")
         }
-        getPokemonData()
+        handleLoad()
     }, [pokemonId])
 
     function incrementPokemonId(incrementor) {

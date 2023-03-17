@@ -4,7 +4,7 @@ import Car from '../components/Car'
 import { DataContext } from '../contexts/DataProvider'
 
 export default function CarSingle() {
-    const { id } = useParams()
+    const { id, uid } = useParams()
     const [car, setCar] = useState({})
     const [error, setError] = useState(false)
     const { getCar } = useContext(DataContext)
@@ -12,7 +12,7 @@ export default function CarSingle() {
     useEffect(() => {
         async function handleLoad() {
             try {
-                const data = await getCar(id)
+                const data = await getCar(uid, id)
                 setCar(data)
             } catch (err) {
                 setError(true)

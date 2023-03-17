@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react'
+import { useContext } from 'react'
 import { BrowserRouter, 
   Routes, 
   Route, 
@@ -11,9 +11,12 @@ import Inventory from './views/Inventory'
 import Profile from './views/Profile'
 import Pokemon from './views/Pokemon'
 import CarSingle from './views/CarSingle'
+import { AuthContext } from './contexts/AuthProvider';
 
 
 function App() {
+  const { login, user, logout } = useContext(AuthContext)
+
   return (
     <BrowserRouter>
     <nav>
@@ -32,8 +35,20 @@ function App() {
         </li>
       </ul>
     </nav>
+    <div>
+    {
+        (!user.loggedIn) ?
+        <button onClick={ login }>Login</button>
+        :
+        <div>
+          <p>Current User: {user.displayName}</p>
+          <button onClick={ logout }>Logout</button>
+        </div>       
+      }
+    </div>
+
     <Routes>
-      <Route path="/car/:id" element={<CarSingle/>} />
+      <Route path="/car/:uid/:id" element={<CarSingle/>} />
       <Route path="/" element={<Home />} />
       <Route path="/inventory" element={<Inventory />} />
       <Route path="/pokemon" element={<Pokemon />} />

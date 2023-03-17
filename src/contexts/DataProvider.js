@@ -1,19 +1,24 @@
 import { useState, useEffect, createContext, useContext } from 'react'
-import { getFirestore, getDocs, collection, doc, getDoc } from '@firebase/firestore'
+import { getFirestore, getDocs, collection, doc, getDoc, addDoc, collectionGroup, query } from '@firebase/firestore'
+import { AuthContext } from './AuthProvider'
 
 export const DataContext = createContext()
 
 export const DataProvider = function(props) {
     const [cars, setCars] = useState([])
+    const { user } = useContext(AuthContext)
     const db = getFirestore()
     console.log(cars)
     useEffect(() => {
         async function getCars() {
-            const querySnapshot = await getDocs(collection(db, 'cars'))
+            const carQuery = query(collectionGroup(db, 'cars'))
+            const querySnapshot = await getDocs(carQuery)
             const loadedCars = []
             querySnapshot.forEach((doc) => {
+                console.log(doc.ref.parent.parent?.id)
                 loadedCars.push({
                     id: doc.id,
+                    uid: doc.ref.parent.parent?.id,
                     ...doc.data()
                 })
             })
@@ -25,8 +30,8 @@ export const DataProvider = function(props) {
         getCars()
     }, [])
 
-    async function getCar(id) {
-        const docRef = doc(db, 'cars', id)
+    async function getCar(uid, id) {
+        const docRef = doc(db, 'users', uid, 'cars', id)
         const docSnap = await getDoc(docRef)
 
         if (!docSnap.exists()) {
@@ -45,10 +50,32 @@ export const DataProvider = function(props) {
         return data 
     }
 
+    async function addCar(name, year, sellingPrice, kmDriven) {
+        const newCar = {
+            name,
+            year,
+            sellingPrice,
+            kmDriven,
+            username: user.displayName
+        }
+
+        const docRef = await addDoc(collection(db, 'users', user.uid, 'cars'), newCar)
+
+        newCar.id = docRef.id
+
+        setCars([
+            newCar,
+            ...cars
+        ])
+
+        return newCar
+    }
+
     const value = {
         cars,
         getCar,
-        getPokemonData
+        getPokemonData,
+        addCar 
     }
 
     return (
